@@ -21,4 +21,8 @@ describe('imap', function () {
     const resp = await imap.list();
     should(_.findWhere(resp, {name: 'INBOX'})).not.be.exactly(undefined);
   });
+  it('select a box', async() => {
+    const resp = await imap.select('INBOX');
+    should(resp.flags.length > 0).be.exactly(true);
+  });
 });
