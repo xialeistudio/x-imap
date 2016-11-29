@@ -1,0 +1,41 @@
+{
+  "name": "x-imap",
+  "version": "0.0.1",
+  "description": "a imap library for nodejs",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --compilers=babel-register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xialeistudio/x-imap.git"
+  },
+  "keywords": [
+    "imap"
+  ],
+  "author": "xialeistudio <xialeistudio@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xialeistudio/x-imap/issues"
+  },
+  "homepage": "https://github.com/xialeistudio/x-imap#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "eslint": "^3.11.1",
+    "mocha": "^3.2.0",
+    "should": "^11.1.1"
+  },
+  "dependencies": {
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-3": "^6.17.0",
+    "babel-register": "^6.18.0",
+    "bluebird": "^3.4.6",
+    "cross-env": "^3.1.3",
+    "debug": "^2.3.3"
+  }
+}
