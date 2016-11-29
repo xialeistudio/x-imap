@@ -25,4 +25,12 @@ describe('imap', function () {
     const resp = await imap.select('INBOX');
     should(resp.flags.length > 0).be.exactly(true);
   });
+  it('search all mails', async() => {
+    const resp = await imap.searchAll();
+    should(resp).be.a.Array();
+  });
+  it('search new mails', async() => {
+    const resp = await imap.searchNew();
+    should(resp).be.a.Array();
+  });
 });
