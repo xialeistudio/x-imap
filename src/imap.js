@@ -131,12 +131,13 @@ export default class IMAP {
   /**
    * 获取邮件
    * @param source
-   * @param options
+   * @param fetchOptions
+   * @param bodyOptions
    */
-  fetch(source, options) {
+  fetch(source, fetchOptions, bodyOptions = {encoding: 'utf8', multipart: false}) {
     return new Promise((resolve, reject) => {
       const data = {};
-      this.imap.seq.fetch(source, options)
+      this.imap.seq.fetch(source, fetchOptions)
         .once('message', (msg) => {
           msg.on('body', (stream, info) => {
             let headers = '', body = '';

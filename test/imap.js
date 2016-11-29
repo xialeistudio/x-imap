@@ -18,7 +18,7 @@ describe('test imap', function () {
     const d = await imap.getBoxes();
     should(d.INBOX).be.a.Object();
   });
-  it('status', async() => {
+  it.skip('status', async() => {
     const d = await imap.status('INBOX');
     should(d.name).be.exactly('INBOX');
   });
