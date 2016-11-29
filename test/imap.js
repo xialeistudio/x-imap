@@ -18,7 +18,7 @@ describe('imap', function () {
     should(resp.indexOf('OK') !== -1).be.exactly(true);
   });
   it('get all boxes', async() => {
-    const resp = await imap.boxes();
+    const resp = await imap.list();
     should(_.findWhere(resp, {name: 'INBOX'})).not.be.exactly(undefined);
   });
 });
