@@ -1,4 +1,5 @@
 /**
  * Created by xialei on 16-11-29.
  */
-module.exports = require('./lib/imap');
+exports.IMAP = require('./lib/imap').default;
+exports.BodyParser = require('./lib/BodyParser').default;

@@ -3,7 +3,9 @@
  */
 import Imap from 'imap';
 import Promise from 'bluebird';
-import {inspect} from 'util';
+import BufferHelper from 'bufferhelper';
+import iconv from 'iconv-lite';
+import BodyParser from './BodyParser';
 export default class IMAP {
 
   constructor(options) {
@@ -24,10 +26,7 @@ export default class IMAP {
    * 断开连接
    */
   disconnect() {
-    return new Promise((resolve, reject) => {
-      this.imap.once('close', (hasError) => hasError ? reject(new Error('error')) : resolve());
-      this.imap.destroy();
-    });
+    this.imap.destroy();
   }
 
   /**
@@ -131,26 +130,27 @@ export default class IMAP {
   /**
    * 获取邮件
    * @param source
-   * @param fetchOptions
-   * @param bodyOptions
+   * @param options
+   * @param bodyParser
    */
-  fetch(source, fetchOptions, bodyOptions = {encoding: 'utf8', multipart: false}) {
+  fetch(source, options, bodyParser = {name: BodyParser.StandardParser, options: {encoding: 'utf8'}}) {
     return new Promise((resolve, reject) => {
       const data = {};
-      this.imap.seq.fetch(source, fetchOptions)
+      this.imap.fetch(source, options)
         .once('message', (msg) => {
           msg.on('body', (stream, info) => {
-            let headers = '', body = '';
+            let headers = '', body = new BufferHelper;
             stream.on('data', (chunk) => {
-              if (info.which === 'TEXT') {
-                body += chunk.toString('utf8');
+              if (info.which.indexOf('HEADER') === -1) {
+                body.concat(chunk);
               } else {
                 headers += chunk.toString('utf8');
               }
             });
             stream.on('end', () => {
-              if (info.which === 'TEXT') {
-                data.body = body.toString();
+              if (info.which.indexOf('HEADER') === -1) {
+                const parser = new bodyParser.name(body.toBuffer(), bodyParser.options);
+                data.body = parser.parse();
               } else {
                 data.headers = Imap.parseHeader(headers);
               }
