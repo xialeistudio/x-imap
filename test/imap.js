@@ -4,33 +4,46 @@
 import should from 'should';
 import {describe, it} from 'mocha';
 const config = require('../config.json');
-import IMAP from '../lib/imap';
-import _ from 'underscore';
-describe('imap', function () {
+import IMAP from '../src/imap';
+
+describe('test imap', function () {
   this.timeout(30000);
-  const imap = new IMAP();
-  it('connect to imap server', async() => {
-    const resp = await imap.connect(config.imap);
-    should(resp.indexOf('OK') !== -1).be.exactly(true);
+  const imap = new IMAP(config);
+  let mailId = 0;
+  it('connect', async() => {
+    const d = await imap.connect();
+    should(d).be.exactly(undefined);
   });
-  it('login to imap server', async() => {
-    const resp = await imap.login(config.username, config.password);
-    should(resp.indexOf('OK') !== -1).be.exactly(true);
+  it('getBoxes', async() => {
+    const d = await imap.getBoxes();
+    should(d.INBOX).be.a.Object();
   });
-  it('get all boxes', async() => {
-    const resp = await imap.list();
-    should(_.findWhere(resp, {name: 'INBOX'})).not.be.exactly(undefined);
+  it('status', async() => {
+    const d = await imap.status('INBOX');
+    should(d.name).be.exactly('INBOX');
   });
-  it('select a box', async() => {
-    const resp = await imap.select('INBOX');
-    should(resp.flags.length > 0).be.exactly(true);
+
+  it('open INBOX', async() => {
+    const d = await imap.openBox('INBOX');
+    should(d.name).be.exactly('INBOX');
   });
-  it('search all mails', async() => {
-    const resp = await imap.searchAll();
-    should(resp).be.a.Array();
+  it('search INBOX', async() => {
+    const d = await imap.search(['UNSEEN']);
+    mailId = d[0];
+    should(d).be.a.Array();
   });
-  it('search new mails', async() => {
-    const resp = await imap.searchNew();
-    should(resp).be.a.Array();
+  it('fetch MAIL', async() => {
+    const f = await imap.fetch(mailId, {
+      bodies: 'TEXT'
+    });
+    // should(f.header.date).be.a.Object();
+    console.log(f);
+  });
+  it('close INBOX', async function () {
+    await imap.closeBox();
+  });
+  it('disconnect', async() => {
+    const d = await imap.disconnect();
+    should(d).be.exactly(undefined);
   });
 });
